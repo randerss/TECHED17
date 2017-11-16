@@ -1,3 +1,36 @@
 ID: TECHED17
 _schema-version: '2.0'
 version: 0.0.1
+modules:
+  - name: db
+    type: hdb
+    path: db
+  - name: js
+    type: nodejs
+    path: js
+    provides:
+      - name: js_api
+        properties:
+          url: '${default-url}'
+    requires:
+      - name: db
+      - name: hdi_db
+
+  - name: ui
+    type: html5
+    path: ui
+    requires:
+     - name: js_api
+       group: destinations
+       properties:
+          name: js_be
+          url: ~{url}
+
+resources:
+  - name: hdi_db
+    parameters:
+      config:
+        schema: DB
+    properties:
+      hdi-container-name: '${service-name}'
+    type: com.sap.xs.hdi-container
